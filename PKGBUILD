@@ -1,4 +1,3 @@
-# $Id: PKGBUILD,v 1.9 2008/01/11 14:25:06 tpowa Exp $
 # Maintainer: Tobias Powalowski <tpowa@archlinux.org>
 pkgname=libassuan
 pkgver=1.0.4
