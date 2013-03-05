@@ -1,7 +1,7 @@
 # Maintainer: Tobias Powalowski <tpowa@archlinux.org>
 
 pkgname=libassuan
-pkgver=2.0.3
+pkgver=2.1.0
 pkgrel=1
 pkgdesc="A IPC library used by some GnuPG related software"
 arch=('i686' 'x86_64')
@@ -11,6 +11,7 @@ depends=('libgpg-error')
 options=('!libtool')
 source=(ftp://ftp.gnupg.org/gcrypt/$pkgname/$pkgname-$pkgver.tar.bz2)
 install=libassuan.install
+md5sums=('b3231eec8e567f4f9294474a387378f5')
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
@@ -27,4 +28,3 @@ package() {
   cd ${srcdir}/${pkgname}-${pkgver}
   make DESTDIR=${pkgdir} install
 }
-md5sums=('179d1918325fdb928c7bd90b8a514fc7')
