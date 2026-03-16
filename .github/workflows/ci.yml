@@ -1378,6 +1378,18 @@ jobs:
       - uses:
           actions/checkout@v3
       - name:
+          Installs Crash Bash Library.
+        run: |
+          git \
+            clone \
+              "https://github.com/themartiancompany/crash-bash"
+          cd \
+            "crash-bash"
+          make \
+            DESTDIR="/" \
+            PREFIX="/usr" \
+            install
+      - name:
           Gets recipe-get.
         run: |
           git \
