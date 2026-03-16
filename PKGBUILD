@@ -34,9 +34,11 @@
 #   Tobias Powalowski
 #     <tpowa@archlinux.org>
 
-_os="$(
-  uname \
-    -o)"
+if [[ ! -v "_os" ]]; then
+  _os="$(
+    uname \
+      -o)"
+fi
 if [[ "${_os}" == "Android" ]]; then
   _libc="ndk-sysroot"
   _compiler="clang"
@@ -130,6 +132,7 @@ makedepends=(
 if [[ "${_os}" == "Msys" ]]; then
   makedepends+=(
     "${_libc_headers}"
+    "windows-default-manifest"
   )
 fi
 if [[ "${_git}" == "true" ]]; then
