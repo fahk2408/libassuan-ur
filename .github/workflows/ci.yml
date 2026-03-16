@@ -612,11 +612,20 @@ jobs:
           /entrypoint.sh \
             rm \
               -rf \
-              "${HOME}/../usr/var/cache/pacman/pkg/*.sig"
+              $(find \
+                  "${HOME}/../usr/var/cache/pacman/pkg" \
+                  -iname \
+                    "*.pkg.*.sig" || \
+                true) || \
+            true
           /entrypoint.sh \
             pacman \
               -Udd \
-              "${HOME}/../usr/var/cache/pacman/pkg/*.pkg."
+              $(find \
+                  "${HOME}/../usr/var/cache/pacman/pkg" \
+                  -iname \
+                    "*.pkg.tar*" || \
+                true)
           /entrypoint.sh \
             pacman-key \
               --init
