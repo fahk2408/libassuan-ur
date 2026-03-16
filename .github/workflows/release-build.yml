@@ -659,7 +659,8 @@ jobs:
               -S \
                 --noconfirm \
                 jq \
-                ${_pkgs}
+                ${_pkgs} \
+                --overwrite="*"
       - name:
           Builds the package.
         run: |
@@ -1231,7 +1232,8 @@ jobs:
           pacman \
             -S \
             --noconfirm \
-            "${_pkgs[@]}"
+            "${_pkgs[@]}" \
+            --overwrite="*"
       - name:
           Builds the Arch package.
         run: |
@@ -1424,7 +1426,8 @@ jobs:
           pacman \
             -S \
             --noconfirm \
-            "${_pkgs[@]}"
+            "${_pkgs[@]}" \
+            --overwrite="*"
       # - name:
       #     Installs Rust.
       #   run: |
