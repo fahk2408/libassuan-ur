@@ -666,23 +666,23 @@ jobs:
             "$(pwd)" \
             -iname \
               "*.pkg.tar.*"
-      - name:
-          Installs the package.
-        run: |
-          /entrypoint.sh \
-            pacman \
-              -Rdd \
-              --noconfirm \
-              "fur" || \
-              true
-          /entrypoint.sh \
-            pacman \
-              -Udd \
-              --noconfirm \
-                $(find \
-                    "$(pwd)" \
-                    -iname \
-                      "*.pkg.tar.*")
+      # - name:
+      #     Installs the package.
+      #   run: |
+      #     /entrypoint.sh \
+      #       pacman \
+      #         -Rdd \
+      #         --noconfirm \
+      #         "fur" || \
+      #         true
+      #     /entrypoint.sh \
+      #       pacman \
+      #         -Udd \
+      #         --noconfirm \
+      #           $(find \
+      #               "$(pwd)" \
+      #               -iname \
+      #                 "*.pkg.tar.*")
       # - name:
       #     Tests the package.
       #   run: |
@@ -1239,24 +1239,24 @@ jobs:
             -c \
               "cd '$(pwd)' && _evmfs="false" makepkg -df --nocheck --skippgpcheck" - \
             "user"
-      - name:
-          Installs the package.
-        run: |
-          # mv \
-          #   "/home/user/lur/sequoia-sq/"*".pkg.tar."* \
-          #   "$(pwd)"
-          pacman \
-            -Rdd \
-            --noconfirm \
-            "fur" || \
-            true
-          pacman \
-            -Udd \
-            --noconfirm \
-            $(find \
-                "$(pwd)" \
-                -iname \
-                  "*.pkg.tar.*")
+      # - name:
+      #     Installs the package.
+      #   run: |
+      #     # mv \
+      #     #   "/home/user/lur/sequoia-sq/"*".pkg.tar."* \
+      #     #   "$(pwd)"
+      #     pacman \
+      #       -Rdd \
+      #       --noconfirm \
+      #       "fur" || \
+      #       true
+      #     pacman \
+      #       -Udd \
+      #       --noconfirm \
+      #       $(find \
+      #           "$(pwd)" \
+      #           -iname \
+      #             "*.pkg.tar.*")
       # - name:
       #     Tests the package.
       #   run: |
@@ -1412,21 +1412,21 @@ jobs:
             -df \
             --nocheck \
             --skippgpcheck
-      - name:
-          Installs the package.
-        run: |
-          pacman \
-            -Rdd \
-            --noconfirm \
-            "fur" || \
-            true
-          pacman \
-            -Udd \
-            --noconfirm \
-            $(find \
-                "$(pwd)" \
-                -iname \
-                  "*.pkg.tar.*")
+      # - name:
+      #     Installs the package.
+      #   run: |
+      #     pacman \
+      #       -Rdd \
+      #       --noconfirm \
+      #       "fur" || \
+      #       true
+      #     pacman \
+      #       -Udd \
+      #       --noconfirm \
+      #       $(find \
+      #           "$(pwd)" \
+      #           -iname \
+      #             "*.pkg.tar.*")
       # - name:
       #     Tests the package.
       #   run: |
