@@ -1425,12 +1425,22 @@ jobs:
             export \
               _pkgs_mingw="${_pkgs_mingw} mingw-w64-${{ matrix.env }}-${_pkg}"
           done
-          pacman \
-            -S \
+          for _pkg in ${_pkgs}; do
+            pacman \
+              -S \
               --noconfirm \
-              jq \
-              ${_pkgs_mingw} \
-              --overwrite="*"
+              "${_pkg}" \
+              --overwrite="*" || \
+              true
+          done
+          for _pkg in ${_pkgs_mingw}; do
+            pacman \
+              -S \
+              --noconfirm \
+              "${_pkg}" \
+              --overwrite="*" || \
+              true
+          done
       - name:
           Builds the package.
         run: |
