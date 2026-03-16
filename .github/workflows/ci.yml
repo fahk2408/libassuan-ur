@@ -584,6 +584,32 @@ jobs:
               -rf \
               "${HOME}/fur"
       - name:
+          Installs Termux Keyring.
+        run: |
+          /entrypoint.sh \
+            fur \
+              -v \
+              -p \
+                "pacman" \
+              -d \
+              "termux-keyring"
+          /entrypoint.sh \
+            rm \
+              "${HOME}/fur/termux/any/"*".pkg.tar."*".sig"
+          /entrypoint.sh \
+            pacman \
+              -Udd \
+              --noconfirm \
+              "${HOME}/fur/termux/any/"*".pkg.tar."*
+          /entrypoint.sh \
+            rm \
+              -rf \
+              "${HOME}/fur"
+          /entrypoint.sh \
+            pacman-key \
+              --init || \
+            true
+      - name:
           Installs Clang and Ninja.
         run: |
           # pkg/pip need to be prefixed with /entrypoint.sh
@@ -594,95 +620,6 @@ jobs:
                 -y \
                 "clang" \
                 "ninja"
-          # This doesn't work
-          # /entrypoint.sh \
-          #   gpg \
-          #     --homedir \
-          #       "/data/data/com.termux/files/usr/etc/pacman.d/gnupg" \
-          #     --recv-keys \
-          #       "998DE27318E867EA976BA877389CEED64573DFCA"
-          # One needs to manually install the
-          # termux-keyring pacman package if
-          # in the Termux Debian environment.
-          export \
-            _sig_enabled="SigLevel    = Required DatabaseOptional"
-          export \
-            _sig_disabled="SigLevel    = Optional"
-          /entrypoint.sh \
-            sed \
-              -i \
-              "s/${_sig_enabled}/${_sig_disabled}/g" \
-              "${HOME}/../usr/etc/pacman.conf"
-          /entrypoint.sh \
-            pacman \
-              -Sy \
-              termux-keyring || \
-          true
-      - name:
-          Installs Clang and Ninja.
-        run: |
-          export \
-            _sig_enabled="SigLevel    = Required DatabaseOptional"
-          export \
-            _sig_disabled="SigLevel    = Optional"
-          find \
-            "${HOME}/../usr/var/cache/pacman" \
-            -type \
-              "f" \
-            -iname \
-              "*.pkg.*" || \
-          true
-          find \
-            "${HOME}/../usr/var/cache/pacman/pkg" \
-            -type \
-              "f" \
-            -iname \
-              "*.pkg.*.sig" \
-            -exec \
-              rm -rf {} \; || \
-          true
-          /entrypoint.sh \
-            rm \
-              -rf \
-              $(find \
-                  "${HOME}/../usr/var/cache/pacman/pkg" \
-                  -type \
-                    "f" \
-                  -iname \
-                    "*.pkg.tar.*.sig" || \
-                true) || \
-          /entrypoint.sh \
-            rm \
-              -rf \
-              $(find \
-                  "${HOME}/../usr/var/cache/pacman/pkg" \
-                  -type \
-                    "f" \
-                  -iname \
-                    "*.pkg.*.sig" || \
-                true) || \
-            true
-          /entrypoint.sh \
-            sed \
-              -i \
-              "s/${_sig_disabled}/${_sig_enabled}/g" \
-              "${HOME}/../usr/etc/pacman.conf"
-          /entrypoint.sh \
-            pacman \
-              -Udd \
-              --overwrite="*" \
-              $(find \
-                  "${HOME}/../usr/var/cache/pacman/pkg" \
-                  -type \
-                    "f" \
-                  -iname \
-                    "*.pkg.tar*" || \
-                true) || \
-            true
-          /entrypoint.sh \
-            pacman-key \
-              --init || \
-            true
           # /entrypoint.sh \
           #   pip \
           #     install \
