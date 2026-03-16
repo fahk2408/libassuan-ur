@@ -127,7 +127,11 @@ makedepends=(
   "${_compiler}"
   "texinfo"
 )
-if [[ "${_os}" == "Windows" ]]; then
+if [[ "${_os}" == "Android" ]]; then
+  true
+elif [[ "${_os}" == "GNU/Linux" ]]; then
+  true
+elif [[ "${_os}" == "Windows" ]]; then
   makedepends+=(
     "${_libc_headers}"
   )
