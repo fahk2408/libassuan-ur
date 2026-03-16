@@ -604,11 +604,26 @@ jobs:
           # One needs to manually install the
           # termux-keyring pacman package if
           # in the Termux Debian environment.
+          export \
+            _sig_enabled="SigLevel    = Required DatabaseOptional"
+          export \
+            _sig_disabled="SigLevel    = DatabaseOptional"
+          /entrypoint.sh \
+            sed \
+              -i \
+              "${_sig_enabled}/${_sig_disabled}/g" \
+              "${HOME}/../usr/etc/pacman.conf"
           /entrypoint.sh \
             pacman \
               -Sy \
+              --noconfirm \
               termux-keyring || \
           true
+          /entrypoint.sh \
+            sed \
+              -i \
+              "${_sig_disabled}/${_sig_enabled}/g" \
+              "${HOME}/../usr/etc/pacman.conf"
           /entrypoint.sh \
             rm \
               -rf \
