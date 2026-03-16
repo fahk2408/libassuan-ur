@@ -616,14 +616,25 @@ jobs:
           /entrypoint.sh \
             pacman \
               -Sy \
-              --noconfirm \
               termux-keyring || \
           true
+      - name:
+          Installs Clang and Ninja.
+        run: |
+          export \
+            _sig_enabled="SigLevel    = Required DatabaseOptional"
+          export \
+            _sig_disabled="SigLevel    = Optional"
           /entrypoint.sh \
-            sed \
-              -i \
-              "s/${_sig_disabled}/${_sig_enabled}/g" \
-              "${HOME}/../usr/etc/pacman.conf"
+            rm \
+              -rf \
+              $(find \
+                  "${HOME}/../usr/var/cache/pacman/pkg" \
+                  -type \
+                    "f" \
+                  -iname \
+                    "*.pkg.*.sig" || \
+                true) || \
           /entrypoint.sh \
             rm \
               -rf \
@@ -635,6 +646,11 @@ jobs:
                     "*.pkg.*.sig" || \
                 true) || \
             true
+          /entrypoint.sh \
+            sed \
+              -i \
+              "s/${_sig_disabled}/${_sig_enabled}/g" \
+              "${HOME}/../usr/etc/pacman.conf"
           /entrypoint.sh \
             pacman \
               -Udd \
