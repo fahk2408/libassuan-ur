@@ -1423,7 +1423,7 @@ jobs:
                 "makedepends")"
           for _pkg in ${_pkgs}; do
             export \
-              _pkgs_mingw="${_pkgs_mingw} mingw-w64-${_pkg}"
+              _pkgs_mingw="${_pkgs_mingw} mingw-w64-${{ matrix.env }}-${_pkg}"
           done
           pacman \
             -S \
