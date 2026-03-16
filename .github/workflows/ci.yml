@@ -627,7 +627,8 @@ jobs:
                 "${HOME}/fur-git-build" \
               -- \
               -df \
-              --nocheck
+              --nocheck \
+              --skippgpcheck
           /entrypoint.sh \
             echo \
               "Home: ${HOME}"
@@ -1205,7 +1206,7 @@ jobs:
         run: |
           su \
             -c \
-              "cd '$(pwd)' && _evmfs="false" makepkg -df --nocheck" - \
+              "cd '$(pwd)' && _evmfs="false" makepkg -df --nocheck --skippgpcheck" - \
             "user"
       - name:
           Installs the package.
@@ -1374,7 +1375,8 @@ jobs:
           _evmfs="false" \
           makepkg \
             -df \
-            --nocheck
+            --nocheck \
+            --skippgpcheck
       - name:
           Installs the package.
         run: |
