@@ -1429,6 +1429,11 @@ jobs:
             clone \
               "https://github.com/themartiancompany/reallymakepkg" || \
           true
+          cd \
+            "reallymakepkg"
+          make \
+            PREFIX="/usr" \
+            install
       - name:
           Installs build dependencies.
         run: |
