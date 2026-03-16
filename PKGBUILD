@@ -132,6 +132,9 @@ if [[ "${_os}" == "Windows" ]]; then
     "${_libc_headers}"
   )
 else
+  makedepends+=(
+    "${_libc_headers}"
+  )
 fi
 if [[ "${_git}" == "true" ]]; then
   makedepends+=(
