@@ -123,10 +123,11 @@ if [[ "${_git}" == "true" ]]; then
     _tag="${_pkg}-${pkgver}"
     _uri="${_url}.git?signed"
   fi
-  _tarname=""
-  _src="${_tarfile}::git+${_uri}#${_tag_name}=${_tag}"
-  _sum="SKIP"
 fi
+_tarname="${_pkg}-${_tag}"
+_tarfile="${_pkg}-${_tag}.${_archive_format}"
+_src="${_tarfile}::git+${_uri}#${_tag_name}=${_tag}"
+_sum="SKIP"
 source=(
   "${_src}"
 )
