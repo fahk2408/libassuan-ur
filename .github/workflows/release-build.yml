@@ -645,14 +645,32 @@ jobs:
               -Sy || \
             true
       - name:
+          Read pkgbase.
+        run: |
+          export \
+            _pkgbase="$(
+              _evmfs="false" \
+              /entrypoint.sh \
+                recipe-get \
+                  "PKGBUILD" \
+                  "pkgbase")"
+          export \
+            _pkgname="$(
+              _evmfs="false" \
+              /entrypoint.sh \
+                recipe-get \
+                  "PKGBUILD" \
+                  "pkgname")"
+      - name:
           Installs build dependencies.
         run: |
           export \
             _pkgs="$(
               _evmfs="false" \
-              recipe-get \
-                "PKGBUILD" \
-                "makedepends")"
+              /entrypoint.sh \
+                recipe-get \
+                  "PKGBUILD" \
+                  "makedepends")"
           SHELL="bash" \
           /entrypoint.sh \
             pacman \
@@ -671,7 +689,7 @@ jobs:
             reallymakepkg \
               -v \
               -w \
-                "${HOME}/fur-git-build" \
+                "${HOME}/${_pkgbase}-git-build" \
               -u \
               -- \
               -df \
@@ -738,9 +756,9 @@ jobs:
             ${{ github.event.release.upload_url }}
             # ${{ steps.create_release.outputs.upload_url }}
           asset_path:
-            fur-git-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
+            ${_pkgbase}-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
           asset_name:
-            dogeos-android-fur-git-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
+            dogeos-android-${_pkgbase}-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
           asset_content_type:
             application/gzip
   arch_release:
@@ -1219,6 +1237,23 @@ jobs:
             "user:user" \
             "$(pwd)"
       - name:
+          Read pkgbase.
+        run: |
+          export \
+            _pkgbase="$(
+              _evmfs="false" \
+              /entrypoint.sh \
+              recipe-get \
+                "PKGBUILD" \
+                "pkgbase")"
+          export \
+            _pkgname="$(
+              _evmfs="false" \
+              /entrypoint.sh \
+              recipe-get \
+                "PKGBUILD" \
+                "pkgname")"
+      - name:
           Installs build dependencies.
         run: |
           export \
@@ -1239,7 +1274,7 @@ jobs:
         run: |
           su \
             -c \
-              "cd $(pwd) && _evmfs="false" reallymakepkg -v -u -w '/home/user/fur-git-build' -- -df --nocheck --skippgpcheck" - \
+              "cd $(pwd) && _evmfs="false" reallymakepkg -v -u -w '/home/user/${_pkgbase}-build' -- -df --nocheck --skippgpcheck" - \
             "user"
       # - name:
       #     Installs the package.
@@ -1284,9 +1319,9 @@ jobs:
             ${{ github.event.release.upload_url }}
             # ${{ steps.create_release.outputs.upload_url }}
           asset_path:
-            fur-git-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
+            libassuan-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
           asset_name:
-            dogeos-gnu-fur-git-${{ steps.version.outputs.version }}-any.pkg.tar.xz
+            dogeos-gnu-libassuan-${{ steps.version.outputs.version }}-any.pkg.tar.xz
           asset_content_type:
             application/gzip
   msys2_release:
@@ -1499,7 +1534,7 @@ jobs:
           reallymakepkg \
             -v \
             -w \
-              "${HOME}/fur-git-build" \
+              "${HOME}/libassuan-git-build" \
             -u \
             -- \
             -df \
@@ -1557,9 +1592,9 @@ jobs:
             ${{ github.event.release.upload_url }}
             # ${{ steps.create_release.outputs.upload_url }}
           asset_path:
-            fur-git-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
+            libassuan-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
           asset_name:
-            dogeos-windows-fur-git-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
+            dogeos-windows-libassuan-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
           asset_content_type:
             application/gzip
 
