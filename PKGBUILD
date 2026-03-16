@@ -184,6 +184,7 @@ package() {
     DESTDIR="${pkgdir}"
   )
   make \
+    "${_make_opts[@]}" \
     install \
     -C \
       "${_tarname}"
