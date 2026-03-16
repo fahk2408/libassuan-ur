@@ -1313,7 +1313,7 @@ jobs:
             _evmfs="false" \
             recipe-get \
               "PKGBUILD" \
-              "pkgver")"
+              "pkgrel")"
         id:
           version
       - name:
