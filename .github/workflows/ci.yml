@@ -618,12 +618,12 @@ jobs:
       - name:
           Installs build dependencies.
         run: |
-          /entrypoint.sh \
-            export \
-              _pkgs="$(_evmfs="false" \
-                  recipe-get \
-                    "PKGBUILD" \
-                    "makedepends")"
+          export \
+            _pkgs="$(_evmfs="false" \
+                recipe-get \
+                  "PKGBUILD" \
+                  "makedepends")"
+          SHELL="bash" \
           /entrypoint.sh \
             pacman \
               -S \
