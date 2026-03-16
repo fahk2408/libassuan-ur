@@ -1396,6 +1396,18 @@ jobs:
       - name:
           Gets recipe-get.
         run: |
+          pacman \
+            -Qi \
+            "gcc"
+          pacman \
+            -Qi \
+            "gcc-libs"
+          pacman \
+            -Ss \
+            "msvcrt"
+          pacman \
+            -Ss \
+            "glibc"
           git \
             clone \
               "https://github.com/themartiancompany/reallymakepkg"
