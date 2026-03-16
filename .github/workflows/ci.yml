@@ -625,6 +625,22 @@ jobs:
             _sig_enabled="SigLevel    = Required DatabaseOptional"
           export \
             _sig_disabled="SigLevel    = Optional"
+          find \
+            "${HOME}/../usr/var/cache/pacman" \
+            -type \
+              "f" \
+            -iname \
+              "*.pkg.*" || \
+          true
+          find \
+            "${HOME}/../usr/var/cache/pacman/pkg" \
+            -type \
+              "f" \
+            -iname \
+              "*.pkg.*.sig" \
+            -exec \
+              rm -rf {} \; || \
+          true
           /entrypoint.sh \
             rm \
               -rf \
@@ -633,7 +649,7 @@ jobs:
                   -type \
                     "f" \
                   -iname \
-                    "*.pkg.*.sig" || \
+                    "*.pkg.tar.*.sig" || \
                 true) || \
           /entrypoint.sh \
             rm \
