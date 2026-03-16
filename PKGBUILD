@@ -40,7 +40,7 @@ _os="$(
 if [[ "${_os}" == "Android" ]]; then
   _libc="ndk-sysroot"
   _compiler="clang"
-  _libcompiler="llvm-libs"
+  _libcompiler="libllvm"
   _sh="dash"
 elif [[ "${_os}" == "GNU/Linux" ]]; then
   _libc="glibc"
