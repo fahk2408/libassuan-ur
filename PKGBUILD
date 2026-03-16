@@ -1,51 +1,186 @@
-# Maintainer: David Runge <dvzrv@archlinux.org>
-# Contributor: Gaetan Bisson <bisson@archlinux.org>
-# Contributor: Tobias Powalowski <tpowa@archlinux.org>
+# SPDX-License-Identifier: AGPL-3.0
 
-pkgname=libassuan
-pkgver=3.0.0
+#    ----------------------------------------------------------------------
+#    Copyright © 2022, 2023, 2024, 2025  Pellegrino Prevete
+#
+#    All rights reserved
+#    ----------------------------------------------------------------------
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Maintainer:
+#   Truocolo
+#     <truocolo@aol.com>
+#     <truocolo@0x6E5163fC4BFc1511Dbe06bB605cc14a3e462332b>
+#   Pellegrino Prevete (dvorak)
+#     <pellegrinoprevete@gmail.com>
+#     <dvorak@0x87003Bd6C074C713783df04f36517451fF34CBEf>
+#   David Runge
+#     <dvzrv@archlinux.org>
+# Contributors:
+#   Gaetan Bisson
+#     <bisson@archlinux.org>
+#   Tobias Powalowski
+#     <tpowa@archlinux.org>
+
+_os="$(
+  uname \
+    -o)"
+if [[ "${_os}" == "Android" ]]; then
+  _libc="ndk-sysroot"
+  _compiler="clang"
+  _libcompiler="llvm-libs"
+elif [[ "${_os}" == "GNU/Linux" ]]; then
+  _libc="glibc"
+  _compiler="gcc"
+  _libcompiler="libgcc"
+fi
+_evmfs_available="$(
+  command \
+    -v \
+    "evmfs" || \
+    true)"
+if [[ ! -v "_evmfs" ]]; then
+  if [[ "${_evmfs_available}" != "" ]]; then
+    _evmfs="true"
+  elif [[ "${_evmfs_available}" == "" ]]; then
+    _evmfs="false"
+  fi
+fi
+if [[ ! -v "_git" ]]; then
+  _git="true"
+fi
+if [[ ! -v "_archive_format" ]]; then
+  if [[ "${_git}" == "true" ]]; then
+    if [[ "${_evmfs}" == "true" ]]; then
+      _archive_format="bundle"
+    elif [[ "${_evmfs}" == "false" ]]; then
+      _archive_format="git"
+    fi
+  elif [[ "${_git}" == "false" ]]; then
+    if [[ "${_git_service}" == "github" ]]; then
+      _archive_format="zip"
+    elif [[ "${_git_service}" == "gitlab" ]]; then
+      _archive_format="tar.gz"
+    fi
+  fi
+fi
+_pkg=libassuan
+pkgbase="${_pkg}"
+pkgname=(
+  "${_pkg}"
+)
+pkgver=3.0.2
+_commit="0f84595a4bc706d3afb969d59618244c7db3b59f"
 pkgrel=1
-pkgdesc='IPC library used by some GnuPG related software'
+_pkgdesc=(
+  'IPC library used by some GnuPG related software'
+)
+pkgdesc="${_pkgdesc[*]}"
 arch=(x86_64)
-url="https://www.gnupg.org/related_software/libassuan/"
+url="https://www.gnupg.org/related_software/${_pkg}"
 license=(
-  FSFULLR
-  GPL-2.0-or-later
-  LGPL-2.1-or-later
+  "FSFULLR"
+  "GPL-2.0-or-later"
+  "LGPL-2.1-or-later"
 )
 depends=(
-  glibc
-  libgpg-error
-  sh
+  "${_libc}"
+  "libgpg-error"
+  "sh"
 )
 makedepends=(
-  git
+  "${_libc}"
+  "${_libcompiler}"
+  "${_compiler}"
 )
-provides=(libassuan.so)
-source=(git+https://dev.gnupg.org/source/libassuan.git?signed#tag=${pkgname}-${pkgver})
-sha512sums=('4b118ce0e45596836e7c1eb4d784c297a9080c2ae7a1deee6e1dc526177b6a637fe5234651565f3a923906e64de84b7f4e92a370533953a9d1ea9d22ec3ed46b')
-b2sums=('d6f007d0b15b3871b0a12d51a768f5634e4617c1c2ee84b7823ef6fe98d09691f200901f52cd6654d5eefd2978116cb78f99333f2914895d23ec35e61bbb2719')
+if [[ "${_git}" == "true" ]]; then
+  makedepends+=(
+    "git"
+  )
+fi
+provides=(
+  "${_pkg}.so"
+)
+_url="https://dev.gnupg.org/source/${_pkg}"
+if [[ "${_git}" == "true" ]]; then
+  _tag_name="commit"
+  if [[ "${_tag_name}" == "commit" ]]; then
+    _tag="${_commit}"
+    _uri="${_url}.git?signed"
+  elif [[ "${_tag_name}" == "tag" ]]; then
+    _tag="${_pkg}-${pkgver}"
+    _uri="${_url}.git?signed"
+  fi
+  _tarname=""
+  _src="${_tarfile}::git+${_uri}#${_tag_name}=${_tag}"
+  _sum="SKIP"
+fi
+source=(
+  "${_src}"
+)
+sha256sums=(
+  "${_sum}"
+)
 validpgpkeys=(
-  6DAA6E64A76D2840571B4902528897B826403ADA  # "Werner Koch (dist signing 2020)"
-  AC8E115BF73E2D8D47FA9908E98E9B2D19C6C8BD  # Niibe Yutaka (GnuPG Release Key)
+  # "Werner Koch (dist signing 2020)"
+  "6DAA6E64A76D2840571B4902528897B826403ADA"
+  # Niibe Yutaka (GnuPG Release Key)
+  "AC8E115BF73E2D8D47FA9908E98E9B2D19C6C8BD"
 )
 
 prepare() {
-  cd $pkgname
-  sh autogen.sh
+  cd \
+    "${_tarname}"
+  sh \
+    "autogen.sh"
 }
 
 build() {
-  cd $pkgname
-  ./configure --enable-maintainer-mode --prefix=/usr
+  local \
+    _configure_opts=()
+  _configure_opts+=(
+    --enable-maintainer-mode
+    --prefix="/usr"
+  )
+  cd \
+    "${_tarname}"
+  "./configure" \
+    "${_configure_opts[@]}"
   make
 }
 
 check() {
-  make check -C $pkgname
+  make \
+    check \
+    -C \
+      "${_tarname}"
 }
 
 package() {
-  make DESTDIR="$pkgdir" install -C $pkgname
-  install -vDm 644 $pkgname/{AUTHORS,NEWS,README,ChangeLog} -t "$pkgdir/usr/share/doc/$pkgname/"
+  local \
+    _make_opts=()
+  _make_opts+=(
+    DESTDIR="${pkgdir}"
+  )
+  make \
+    install \
+    -C \
+      "${_tarname}"
+  install \
+    -vDm644 \
+    "${_tarname}/"{"AUTHORS","NEWS","README","ChangeLog"} \
+    -t \
+    "${pkgdir}/usr/share/doc/${pkgname}/"
 }
