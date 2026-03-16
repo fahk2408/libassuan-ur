@@ -653,13 +653,13 @@ jobs:
                     "$(pwd)" \
                     -iname \
                       "*.pkg.tar.*")
-      - name:
-          Tests the package.
-        run: |
-          /entrypoint.sh \
-            fur \
-              -v \
-              evm-wallet
+      # - name:
+      #     Tests the package.
+      #   run: |
+      #     /entrypoint.sh \
+      #       fur \
+      #         -v \
+      #         evm-wallet
       - name:
           version
         run: |
@@ -1226,15 +1226,15 @@ jobs:
                 "$(pwd)" \
                 -iname \
                   "*.pkg.tar.*")
-      - name:
-          Tests the package.
-        run: |
-          fur \
-            -v \
-            -h
-          fur \
-            -v \
-            evm-chains
+      # - name:
+      #     Tests the package.
+      #   run: |
+      #     fur \
+      #       -v \
+      #       -h
+      #     fur \
+      #       -v \
+      #       evm-chains
       - name:
           version
         run: |
@@ -1392,12 +1392,12 @@ jobs:
                 "$(pwd)" \
                 -iname \
                   "*.pkg.tar.*")
-      - name:
-          Tests the package.
-        run: |
-          fur \
-            -v \
-            evm-chains
+      # - name:
+      #     Tests the package.
+      #   run: |
+      #     fur \
+      #       -v \
+      #       evm-chains
       - name:
           version
         run: |

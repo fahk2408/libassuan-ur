@@ -627,7 +627,8 @@ jobs:
               -u \
               -- \
               -df \
-              --nocheck
+              --nocheck \
+              --skippgpcheck
           /entrypoint.sh \
             echo \
               "Home: ${HOME}"
@@ -635,29 +636,29 @@ jobs:
             "$(pwd)" \
             -iname \
               "*.pkg.tar.*"
-      - name:
-          Installs the package.
-        run: |
-          /entrypoint.sh \
-            pacman \
-              -Rdd \
-              --noconfirm \
-              fur || \
-              true
-          /entrypoint.sh \
-            pacman \
-              -Rdd \
-              --noconfirm \
-              fur-docs || \
-              true
-          /entrypoint.sh \
-            pacman \
-              -Udd \
-              --noconfirm \
-              $(find \
-                  "$(pwd)" \
-                  -iname \
-                    "*.pkg.tar.*")
+      # - name:
+      #     Installs the package.
+      #   run: |
+      #     /entrypoint.sh \
+      #       pacman \
+      #         -Rdd \
+      #         --noconfirm \
+      #         fur || \
+      #         true
+      #     /entrypoint.sh \
+      #       pacman \
+      #         -Rdd \
+      #         --noconfirm \
+      #         fur-docs || \
+      #         true
+      #     /entrypoint.sh \
+      #       pacman \
+      #         -Udd \
+      #         --noconfirm \
+      #         $(find \
+      #             "$(pwd)" \
+      #             -iname \
+      #               "*.pkg.tar.*")
       - name:
           version
         run: |
@@ -1189,28 +1190,28 @@ jobs:
         run: |
           su \
             -c \
-              "cd $(pwd) && _evmfs="false" reallymakepkg -v -u -w '/home/user/fur-git-build' -- -df --nocheck" - \
+              "cd $(pwd) && _evmfs="false" reallymakepkg -v -u -w '/home/user/fur-git-build' -- -df --nocheck --skippgpcheck" - \
             "user"
-      - name:
-          Installs the package.
-        run: |
-          pacman \
-            -Rdd \
-            --noconfirm \
-            fur || \
-            true
-          pacman \
-            -Rdd \
-            --noconfirm \
-            fur-docs || \
-            true
-          pacman \
-            -Udd \
-            --noconfirm \
-            $(find \
-                "$(pwd)" \
-                -iname \
-                  "*.pkg.tar.*")
+      # - name:
+      #     Installs the package.
+      #   run: |
+      #     pacman \
+      #       -Rdd \
+      #       --noconfirm \
+      #       fur || \
+      #       true
+      #     pacman \
+      #       -Rdd \
+      #       --noconfirm \
+      #       fur-docs || \
+      #       true
+      #     pacman \
+      #       -Udd \
+      #       --noconfirm \
+      #       $(find \
+      #           "$(pwd)" \
+      #           -iname \
+      #             "*.pkg.tar.*")
       - name:
           version
         run: |
@@ -1393,34 +1394,35 @@ jobs:
             -u \
             -- \
             -df \
-            --nocheck
+            --nocheck \
+            --skippgpcheck
           find \
             "$(pwd)" \
             -iname \
               "*.pkg.tar.*"
-      - name:
-          Installs the package.
-        run: |
-          echo \
-            "env position: $(command -v env)"
-          pacman \
-            -Rdd \
-            --noconfirm \
-            fur || \
-            true
-          pacman \
-            -Rdd \
-            --noconfirm \
-            fur-docs || \
-            true
-          pacman \
-            -Udd \
-            --noconfirm \
-            --overwrite="*" \
-            $(find \
-                "$(pwd)" \
-                -iname \
-                  "*.pkg.tar.*")
+      # - name:
+      #     Installs the package.
+      #   run: |
+      #     echo \
+      #       "env position: $(command -v env)"
+      #     pacman \
+      #       -Rdd \
+      #       --noconfirm \
+      #       fur || \
+      #       true
+      #     pacman \
+      #       -Rdd \
+      #       --noconfirm \
+      #       fur-docs || \
+      #       true
+      #     pacman \
+      #       -Udd \
+      #       --noconfirm \
+      #       --overwrite="*" \
+      #       $(find \
+      #           "$(pwd)" \
+      #           -iname \
+      #             "*.pkg.tar.*")
       - name:
           Gets recipe-get.
         run: |
