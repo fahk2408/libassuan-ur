@@ -643,7 +643,8 @@ jobs:
               -S \
                 --noconfirm \
                 jq \
-                ${_pkgs}
+                ${_pkgs} \
+                --overwrite="*"
       - name:
           Builds the package.
         run: |
@@ -1229,7 +1230,8 @@ jobs:
             -S \
               --noconfirm \
               jq \
-              "${_pkgs[@]}"
+              "${_pkgs[@]}" \
+              --overwrite="*"
       - name:
           Builds the package.
         run: |
@@ -1398,7 +1400,8 @@ jobs:
             -S \
               --noconfirm \
               jq \
-              ${_pkgs}
+              ${_pkgs} \
+              --overwrite="*"
       - name:
           Builds the package.
         run: |
