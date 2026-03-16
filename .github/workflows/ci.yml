@@ -1421,11 +1421,15 @@ jobs:
               recipe-get \
                 "PKGBUILD" \
                 "makedepends")"
+          for _pkg in ${_pkgs}; do
+            export \
+              _pkgs_mingw="${_pkgs_mingw} mingw-w64-${_pkg}"
+          done
           pacman \
             -S \
               --noconfirm \
               jq \
-              ${_pkgs} \
+              ${_pkgs_mingw} \
               --overwrite="*"
       - name:
           Builds the package.
