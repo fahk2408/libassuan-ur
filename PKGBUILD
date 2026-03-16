@@ -47,7 +47,7 @@ elif [[ "${_os}" == "GNU/Linux" ]]; then
   _compiler="gcc"
   _libcompiler="libgcc"
   _sh="sh"
-elif [[ "${_os}" == "Windows" ]]; then
+elif [[ "${_os}" == "Msys" ]]; then
   _libc="msys2-w32api-runtime"
   _libc_headers="msys2-w32api-headers"
   _compiler="gcc"
@@ -127,15 +127,7 @@ makedepends=(
   "${_compiler}"
   "texinfo"
 )
-if [[ "${_os}" == "Android" ]]; then
-  true
-elif [[ "${_os}" == "GNU/Linux" ]]; then
-  true
-elif [[ "${_os}" == "Windows" ]]; then
-  makedepends+=(
-    "${_libc_headers}"
-  )
-else
+if [[ "${_os}" == "Msys" ]]; then
   makedepends+=(
     "${_libc_headers}"
   )
