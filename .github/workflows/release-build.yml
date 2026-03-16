@@ -1443,16 +1443,19 @@ jobs:
               "makedepends" || \
             true
           export \
-            _pkgs=(
-            $(_evmfs="false" \
+            _pkgs="$(
+              _evmfs="false" \
               "recipe-get" \
                 "PKGBUILD" \
-                "makedepends")
-          )
+                "makedepends")"
+          for _pkg in ${_pkgs}; do
+            export \
+              _pkgs_mingw="${_pkgs_mingw} mingw-w64-${{ matrix.env }}-${_pkg}"
+          done
           pacman \
             -S \
             --noconfirm \
-            "${_pkgs[@]}" \
+            ${_pkgs_mingw} \
             --overwrite="*"
       # - name:
       #     Installs Rust.
