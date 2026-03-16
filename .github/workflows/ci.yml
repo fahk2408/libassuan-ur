@@ -620,18 +620,16 @@ jobs:
         run: |
           /entrypoint.sh \
             export \
-              _pkgs=(
-                $(_evmfs="false" \
+              _pkgs="$(_evmfs="false" \
                   recipe-get \
                     "PKGBUILD" \
-                    "makedepends")
-            )
+                    "makedepends")"
           /entrypoint.sh \
             pacman \
               -S \
                 --noconfirm \
                 jq \
-                "${_pkgs[@]}"
+                ${_pkgs}
       - name:
           Builds the package.
         run: |
@@ -1373,17 +1371,15 @@ jobs:
           Installs build dependencies.
         run: |
           export \
-            _pkgs=(
-              $(_evmfs="false" \
+            _pkgs="$(_evmfs="false" \
                 recipe-get \
                   "PKGBUILD" \
-                  "makedepends")
-          )
+                  "makedepends")"
           pacman \
             -S \
               --noconfirm \
               jq \
-              "${_pkgs[@]}"
+              ${_pkgs}
       - name:
           Builds the package.
         run: |
