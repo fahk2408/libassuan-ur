@@ -756,9 +756,9 @@ jobs:
             ${{ github.event.release.upload_url }}
             # ${{ steps.create_release.outputs.upload_url }}
           asset_path:
-            ${_pkgbase}-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
+            libassuan-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
           asset_name:
-            dogeos-android-${_pkgbase}-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
+            dogeos-android-libassuan-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
           asset_content_type:
             application/gzip
   arch_release:
