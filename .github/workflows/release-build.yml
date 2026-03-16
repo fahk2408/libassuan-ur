@@ -741,7 +741,12 @@ jobs:
                 _evmfs="false" \
                 recipe-get \
                   "PKGBUILD" \
-                  "pkgver")"
+                  "pkgver")-$( \
+              /entrypoint.sh \
+                _evmfs="false" \
+                recipe-get \
+                  "PKGBUILD" \
+                  "pkgrel")"
         id:
           version
       - name:
@@ -1304,6 +1309,10 @@ jobs:
             _evmfs="false" \
             recipe-get \
               "PKGBUILD" \
+              "pkgver")-$( \
+            _evmfs="false" \
+            recipe-get \
+              "PKGBUILD" \
               "pkgver")"
         id:
           version
@@ -1575,9 +1584,15 @@ jobs:
             export \
               _evmfs="false" && \
             bash \
-            "reallymakepkg/reallymakepkg/recipe-get" \
-              "PKGBUILD" \
-              "pkgver")"
+              "reallymakepkg/reallymakepkg/recipe-get" \
+                "PKGBUILD" \
+                "pkgver")-$( \
+            export \
+              _evmfs="false" && \
+            bash \
+              "reallymakepkg/reallymakepkg/recipe-get" \
+                "PKGBUILD" \
+                "pkgrel")"
         id:
           version
       - name:
@@ -1594,7 +1609,7 @@ jobs:
           asset_path:
             libassuan-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
           asset_name:
-            dogeos-windows-libassuan-${{ steps.version.outputs.version }}-1-any.pkg.tar.xz
+            dogeos-windows-libassuan-${{ steps.version.outputs.version }}-any.pkg.tar.xz
           asset_content_type:
             application/gzip
 
