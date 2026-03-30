@@ -3,17 +3,19 @@
 #
 #    release.yaml
 #
-#    ----------------------------------------------------------------------
-#    Copyright © 2024, 2025 Guilherme Janczak,
+#    ------------------------------------------------------------
+#    Copyright © 2024, 2025
+#                2026       Guilherme Janczak,
 #                           Robert Kirkman,
 #                           Pellegrino Prevete
 #
 #    All rights reserved
-#    ----------------------------------------------------------------------
+#    ------------------------------------------------------------
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
+#    This program is free software: you can redistribute it
+#    and/or modify it under the terms of the GNU Affero
+#    General Public License as published by the Free Software
+#    Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -21,8 +23,9 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU Affero General Public License for more details.
 #
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#    You should have received a copy of the GNU Affero
+#    General Public License along with this program.
+#    If not, see <https://www.gnu.org/licenses/>.
 
 
 name:
@@ -47,8 +50,36 @@ jobs:
         include:
           - runner:
               ubuntu-24.04-arm
+            platform:
+              android
+            platform_target:
+              termux
             architecture:
               aarch64
+          - runner:
+              ubuntu-24.04
+            platform:
+              android
+            platform_target:
+              termux
+            architecture:
+              i686
+          - runner:
+              ubuntu-24.04-arm
+            platform:
+              android
+            platform_target:
+              termux
+            architecture:
+              arm
+          - runner:
+              ubuntu-24.04
+            platform:
+              android
+            platform_target:
+              termux
+            architecture:
+              x86_64
     runs-on:
       ${{ matrix.runner }}
     # prepare writable volume prefix mount for actions/upload-artifact,
@@ -61,6 +92,8 @@ jobs:
         - /tmp/node20:/__e/node20
     # approximate environment variables for actions that can't be forced to use entrypoint.sh
     env:
+      GH_TOKEN:
+        ${{ github.token }}
       TERMUX_MAIN_PACKAGE_FORMAT:
         debian
       TERMUX_VERSION:
@@ -129,7 +162,7 @@ jobs:
           chown \
             -R \
             "1000:1000" \
-            "$(pwd)"
+            "${PWD}"
       - name:
           Setup user's home.
         run: |
@@ -146,41 +179,70 @@ jobs:
               install \
                 -y \
                 "python"
-      - name:
-          Installs Rust.
-        run: |
-          # env 
-          #   _arch="$( \
-          #     uname \
-          #       -m)" \
-          #   export \
-          #     _arch="$( \
-          #       uname \
-          #         -m)" && \
-          #   /entrypoint.sh \
-          #     echo \
-          #       "Architecture: ${_arch}" && \
-          #     if [[ "$(uname -m)" == "armv7l" || \
-          #           "$(uname -m)" == "armv8l" ]]; then \
-          #       _rust="rust-std-armv7-linux-androideabi" \
-          #     fi \
-          #     if [[ "${RUNNER_ARCH}" == "X64" ]]; then \
-          #       _rust="rust" && \
-          #       export \
-          #         _rust="${_rust}" \
-          #     fi \
-          #     if [[ "$(uname -m)" == "i686" || \
-          #           "$(uname -m)" == "aarch64" ]]; then \
-          #       _rust="rust" && \
-          #       export \
-          #         _rust="${_rust}" \
-          #     fi && \
           /entrypoint.sh \
-            apt \
+            pkg \
               install \
                 -y \
-                "rust" \
-                "rust-std-armv7-linux-androideabi"
+                "python-pip"
+          /entrypoint.sh \
+            pip \
+              install \
+                "build"
+          /entrypoint.sh \
+            pip \
+              install \
+                "installer"
+          /entrypoint.sh \
+            pip \
+              install \
+                "setuptools"
+          /entrypoint.sh \
+            pip \
+              install \
+                "flit-core"
+          /entrypoint.sh \
+            pip \
+              install \
+                "cython"
+          /entrypoint.sh \
+            pip \
+              install \
+                "multidict"
+      # - name:
+      #     Installs Rust.
+      #   run: |
+      #     env 
+      #       _arch="$( \
+      #         uname \
+      #           -m)" \
+      #       export \
+      #         _arch="$( \
+      #           uname \
+      #             -m)" && \
+      #       /entrypoint.sh \
+      #         echo \
+      #           "Architecture: ${_arch}" && \
+      #         if [[ "$(uname -m)" == "armv7l" || \
+      #               "$(uname -m)" == "armv8l" ]]; then \
+      #           _rust="rust-std-armv7-linux-androideabi" \
+      #         fi \
+      #         if [[ "${RUNNER_ARCH}" == "X64" ]]; then \
+      #           _rust="rust" && \
+      #           export \
+      #             _rust="${_rust}" \
+      #         fi \
+      #         if [[ "$(uname -m)" == "i686" || \
+      #               "$(uname -m)" == "aarch64" ]]; then \
+      #           _rust="rust" && \
+      #           export \
+      #             _rust="${_rust}" \
+      #         fi && \
+      #     /entrypoint.sh \
+      #       apt \
+      #         install \
+      #           -y \
+      #           "rust" \
+      #           "rust-std-armv7-linux-androideabi"
       - name:
           Installs Git.
         run: |
@@ -188,17 +250,19 @@ jobs:
             pkg \
               install \
                 -y \
+                "gh" \
                 "git" \
                 "jq" \
-                "tree"
-      - name:
-          Installs Capnproto.
-        run: |
-          /entrypoint.sh \
-            pkg \
-              install \
-                -y \
-                "capnproto"
+                "tree" \
+                "unzip"
+      # - name:
+      #     Installs Capnproto.
+      #   run: |
+      #     /entrypoint.sh \
+      #       pkg \
+      #         install \
+      #           -y \
+      #           "capnproto"
       - name:
           Installs Pacman.
         run: |
@@ -246,7 +310,8 @@ jobs:
                 --single-branch \
                 --depth=1 \
                 "https://github.com/themartiancompany/fur" \
-                "${HOME}/fur"
+                "${HOME}/fur" || \
+            true
           /entrypoint.sh \
             rm \
               "${HOME}/fur/termux/any/"*".pkg.tar."*".sig"
@@ -260,7 +325,7 @@ jobs:
               -rf \
               "${HOME}/fur"
       - name:
-          Installs latest Fur.
+          Downloads latest Fur.
         run: |
           /entrypoint.sh \
             git \
@@ -269,7 +334,8 @@ jobs:
                 --single-branch \
                 --depth=1 \
                 "https://github.com/themartiancompany/fur" \
-                "${HOME}/fur-src"
+                "${HOME}/fur-src" || \
+            true
       - name:
           Installs Python Pygments.
         run: |
@@ -591,6 +657,7 @@ jobs:
               install \
                 -y \
                 "clang" \
+                "jq" \
                 "ninja"
           # This doesn't work
           # /entrypoint.sh \
@@ -645,51 +712,271 @@ jobs:
               -Sy || \
             true
       - name:
+          Install docutils.
+        run: |
+          /entrypoint.sh \
+            pip \
+              install \
+                "docutils"
+      - name:
           Read pkgbase.
         run: |
           export \
-            _pkgbase="$(
+            _pkgbase="$( \
               _evmfs="false" \
               /entrypoint.sh \
                 recipe-get \
                   "PKGBUILD" \
                   "pkgbase")"
           export \
-            _pkgname="$(
+            _pkgname="$( \
               _evmfs="false" \
               /entrypoint.sh \
                 recipe-get \
                   "PKGBUILD" \
                   "pkgname")"
       - name:
-          Installs build dependencies.
+          Installs latest Crash Bash Library.
         run: |
+          git \
+            clone \
+              "https://github.com/themartiancompany/crash-bash"
+          cd \
+            "crash-bash"
+          mkdir \
+            -p \
+            "/usr/lib/libcrash-bash"
+          make \
+            PREFIX="/usr" \
+            install
+      - name:
+          Installs latest Reallymakepkg.
+        run: |
+          /entrypoint.sh \
+            pacman \
+              -Rdd \
+              --noconfirm \
+              "reallymakepkg"
+          /entrypoint.sh \
+            git \
+              clone \
+                "https://github.com/themartiancompany/reallymakepkg" \
+                "${HOME}/reallymakepkg-src" || \
+              true
+          /entrypoint.sh \
+            make \
+              PREFIX="/usr" \
+              -C \
+                "${HOME}/reallymakepkg-src" \
+              install-scripts
+          /entrypoint.sh \
+            make \
+              -C \
+                "${HOME}/reallymakepkg-src" \
+              install-scripts
+          /entrypoint.sh \
+            make \
+              -C \
+                "${HOME}/reallymakepkg-src" \
+              install-configs || \
+            true
+          /entrypoint.sh \
+            install \
+              -vDm644 \
+              "${HOME}/reallymakepkg-src/configs/makepkg.android.conf" \
+              "/data/data/com.termux/files/usr/etc/reallymakepkg/makepkg.android.conf"
+      - name:
+          Installs latest gl-dl.
+        run: |
+          /entrypoint.sh \
+            git \
+              clone \
+                --single-branch \
+                --depth=1 \
+                "https://github.com/themartiancompany/gl-dl" \
+                "${HOME}/gl-dl-src" || \
+            true
+          cd \
+            "${HOME}/gl-dl-src"
+          /entrypoint.sh \
+            make \
+              PREFIX="/usr" \
+              install-scripts
+      - name:
+          Installs latest EVM GNUPG.
+        run: |
+          /entrypoint.sh \
+            git \
+              clone \
+                --single-branch \
+                --depth=1 \
+                "https://github.com/themartiancompany/evm-gnupg" \
+                "${HOME}/evm-gnupg-src" || \
+            true
+          cd \
+            "${HOME}/evm-gnupg-src"
+          /entrypoint.sh \
+            make \
+              PREFIX="/usr" \
+              install-scripts
+      - name:
+          Installs latest Gur.
+        run: |
+          /entrypoint.sh \
+            pkg \
+              install \
+                -y \
+                "gh"
+          /entrypoint.sh \
+            git \
+              clone \
+                --branch="master" \
+                --single-branch \
+                --depth=1 \
+                "https://github.com/themartiancompany/gur" \
+                "${HOME}/gur-src" || \
+            true
+          cd \
+            "${HOME}/gur-src"
+          /entrypoint.sh \
+            make \
+              PREFIX="/usr" \
+              install-scripts
+      - name:
+          Installs latest Fur.
+        run: |
+          /entrypoint.sh \
+            git \
+              clone \
+                --branch="main" \
+                --single-branch \
+                --depth=1 \
+                "https://github.com/themartiancompany/fur" \
+                "${HOME}/fur-src" || \
+            true
+          cd \
+            "${HOME}/fur-src"
+          /entrypoint.sh \
+            make \
+              PREFIX="/usr" \
+              install-fur
+      - name:
+          Installs build dependencies.
+        env:
+          GH_TOKEN:
+            ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          _evmfs="false" \
+            recipe-get \
+              -v \
+              -o \
+                "array" \
+              -d \
+                " " \
+              "PKGBUILD" \
+              "makedepends"
+          _evmfs="false" \
+            recipe-get \
+              -o \
+                "array" \
+              -d \
+                " " \
+              "PKGBUILD" \
+              "makedepends" > \
+            "${HOME}/makedepends"
+          for _pkg in $(cat "${HOME}/makedepends"); do \
+            _depend_name="$( \
+              /entrypoint.sh \
+                version-split \
+                  "${_pkg}" \
+                  "name")"
+            SHELL="bash" \
+            /entrypoint.sh \
+              pacman \
+                -S \
+                  --noconfirm \
+                  "${_depend_name}" \
+                  --overwrite="*" || \
+                true
+          done
+          for _pkg in $(cat "${HOME}/makedepends"); do \
+            _depend_name="$( \
+              /entrypoint.sh \
+                version-split \
+                  "${_pkg}" \
+                  "name")"
+            /entrypoint.sh \
+              fur \
+                -v \
+                -t \
+                  "ci" \
+                -m \
+                  "github" \
+                -p \
+                  "pacman" \
+                "${_pkg}" || \
+              true
+          done
+      - name:
+          Builds the Android package.
+        run: |
+          /entrypoint.sh \
+            recipe-get \
+              -v \
+              "PKGBUILD" \
+               "pkgbase" || \
+          true
           export \
-            _pkgs="$(
-              _evmfs="false" \
+            _pkgbase="$( \
               /entrypoint.sh \
                 recipe-get \
                   "PKGBUILD" \
-                  "makedepends")"
-          SHELL="bash" \
+                  "pkgbase")"
+          _pkgbase="$( \
+            /entrypoint.sh \
+              recipe-get \
+                "PKGBUILD" \
+                "pkgbase")" && \
           /entrypoint.sh \
-            pacman \
-              -S \
-                --noconfirm \
-                jq \
-                ${_pkgs} \
-                --overwrite="*"
-      - name:
-          Builds the package.
-        run: |
+            mkdir \
+              -p \
+              "${HOME}/${_pkgbase}-build" && \
+          _arch="$( \
+            uname \
+              -m)" && \
+          if [[ "${_arch}" == "armv8l" ]]; then \
+            _arch="arm"; \
+          fi && \
           /entrypoint.sh \
-            _evmfs="false" \
-            _git="true" \
+            arch="${_arch}" \
             TERMUX_VERSION=50 \
+            _evmfs="false" \
+            _git="false" \
+            _git_service="github" \
+            recipe-get \
+              -v \
+              "PKGBUILD" \
+              "source"
+          /entrypoint.sh \
+            arch="${_arch}" \
+            TERMUX_VERSION=50 \
+            _evmfs="false" \
+            _git="false" \
+            _git_service="github" \
+            recipe-get \
+              -v \
+              "PKGBUILD" \
+              "sha256sums" && \
+          /entrypoint.sh \
+            TERMUX_VERSION=50 \
+            arch="${_arch}" \
+            _evmfs="false" \
+            _git="false" \
+            _git_service="github" \
             reallymakepkg \
               -v \
               -w \
-                "${HOME}/${_pkgbase}-git-build" \
+                "${HOME}/${_pkgbase}-build" \
               -u \
               -- \
               -df \
@@ -698,31 +985,35 @@ jobs:
           /entrypoint.sh \
             echo \
               "Home: ${HOME}"
+          echo \
+            "Packages found:"
           find \
-            "$(pwd)" \
+            "${PWD}" \
             -iname \
-              "*.pkg.tar.*"
+              "*pkg.tar*"
+          bash \
+            ".github/android-arm32-fix"
       # - name:
       #     Installs the package.
       #   run: |
+      #     export \
+      #       _pkgname="$( \
+      #         /entrypoint.sh \
+      #           recipe-get \
+      #             "PKGBUILD" \
+      #             "pkgname")"
       #     /entrypoint.sh \
       #       pacman \
       #         -Rdd \
       #         --noconfirm \
-      #         fur || \
-      #         true
-      #     /entrypoint.sh \
-      #       pacman \
-      #         -Rdd \
-      #         --noconfirm \
-      #         fur-docs || \
+      #         ${_pkgname} || \
       #         true
       #     /entrypoint.sh \
       #       pacman \
       #         -Udd \
       #         --noconfirm \
       #         $(find \
-      #             "$(pwd)" \
+      #             "${PWD}" \
       #             -iname \
       #               "*.pkg.tar.*")
       - name:
@@ -730,7 +1021,7 @@ jobs:
         run: |
           /entrypoint.sh \
             _evmfs="false" \
-            _git="true" \
+            _git_service="github" \
             makepkg \
               --nobuild \
               -df \
@@ -761,9 +1052,9 @@ jobs:
             ${{ github.event.release.upload_url }}
             # ${{ steps.create_release.outputs.upload_url }}
           asset_path:
-            libassuan-${{ steps.version.outputs.version }}-${{ matrix.architecture }}.pkg.tar.xz
+            "libassuan-${{ steps.version.outputs.version }}-${{ matrix.architecture }}.pkg.tar.xz"
           asset_name:
-            dogeos-android-libassuan-${{ steps.version.outputs.version }}-${{ matrix.architecture }}.pkg.tar.xz
+            "dogeos-android-libassuan-${{ steps.version.outputs.version }}-${{ matrix.architecture }}.pkg.tar.xz"
           asset_content_type:
             application/gzip
   arch_release:
@@ -828,7 +1119,8 @@ jobs:
           pacman \
             -S \
             --noconfirm \
-              "nodejs-lts"
+              "nodejs-lts-jod" || \
+          true
           ln \
             -sf \
             "${PREFIX}/bin" \
@@ -839,11 +1131,15 @@ jobs:
           pacman \
             -S \
             --noconfirm \
+            "github-cli" \
             "git" \
             "jq" \
             "python" \
             "python-docutils" \
-            "tree"
+            "python-pip" \
+            "python-build" \
+            "tree" \
+            "unzip"
       - uses:
           actions/checkout@v4.2.2
       - name:
@@ -860,10 +1156,10 @@ jobs:
             "%s\n" \
             "ID: '$(id)'." \
             "Home: '${HOME}'." \
-            "Current directory: '$(pwd)'." \
-            "Contents of the directory '$(pwd)':"
+            "Current directory: '${PWD}'." \
+            "Contents of the directory '${PWD}':"
           ls \
-            "$(pwd)"
+            "${PWD}"
           tree \
             -L \
               2 \
@@ -1240,47 +1536,268 @@ jobs:
           chown \
             -R \
             "user:user" \
-            "$(pwd)"
+            "${PWD}"
+      - name:
+          Installs latest Crash Bash Library.
+        run: |
+          git \
+            clone \
+              "https://github.com/themartiancompany/crash-bash"
+          cd \
+            "crash-bash"
+          mkdir \
+            -p \
+            "/usr/lib/libcrash-bash"
+          make \
+            PREFIX="/usr" \
+            install
+      - name:
+          Installs latest Reallymakepkg.
+        run: |
+          pacman \
+            -Rdd \
+            --noconfirm \
+            "reallymakepkg"
+          git \
+            clone \
+              --branch="main" \
+              --single-branch \
+              --depth=1 \
+              "https://github.com/themartiancompany/reallymakepkg" \
+              "${HOME}/reallymakepkg-src" || \
+          true
+          git \
+            -C \
+              "${HOME}/reallymakepkg-src" \
+            log | \
+            head \
+              -n \
+                20
+          cd \
+            "${HOME}/reallymakepkg-src"
+          make \
+            -C \
+              "${HOME}/reallymakepkg-src" \
+            PREFIX="/usr" \
+            install-scripts
+          make \
+            -C \
+              "${HOME}/reallymakepkg-src" \
+            PREFIX="/usr" \
+            install-configs || \
+          true
+          install \
+            -vDm644 \
+            "${HOME}/reallymakepkg-src/configs/makepkg.gnu.conf" \
+            "/etc/reallymakepkg/makepkg.gnu.conf"
+      - name:
+          Installs latest EVM GNUPG.
+        run: |
+          git \
+            clone \
+              --single-branch \
+              --depth=1 \
+              "https://github.com/themartiancompany/evm-gnupg" \
+              "${HOME}/evm-gnupg-src" || \
+          true
+          cd \
+            "${HOME}/evm-gnupg-src"
+          make \
+            PREFIX="/usr" \
+            install-scripts
+      - name:
+          Installs latest gl-dl.
+        run: |
+          git \
+            clone \
+              --single-branch \
+              --depth=1 \
+              "https://github.com/themartiancompany/gl-dl" \
+              "${HOME}/gl-dl-src" || \
+          true
+          cd \
+            "${HOME}/gl-dl-src"
+          make \
+            PREFIX="/usr" \
+            install-scripts
+      - name:
+          Installs latest Gur.
+        run: |
+          git \
+            clone \
+              --branch="master" \
+              --single-branch \
+              --depth=1 \
+              "https://github.com/themartiancompany/gur" \
+              "${HOME}/gur-src" || \
+          true
+          make \
+            -C \
+              "${HOME}/gur-src" \
+            PREFIX="/usr" \
+            install-scripts
+      - name:
+          Installs latest Fur.
+        run: |
+          git \
+            clone \
+              --branch="main" \
+              --single-branch \
+              --depth=1 \
+              "https://github.com/themartiancompany/fur" \
+              "${HOME}/fur-src" || \
+          true
+          cd \
+            "${HOME}/fur-src"
+          make \
+            PREFIX="/usr" \
+            install-fur
       - name:
           Read pkgbase.
         run: |
           export \
-            _pkgbase="$(
+            _pkgbase="$( \
               _evmfs="false" \
-              /entrypoint.sh \
               recipe-get \
                 "PKGBUILD" \
                 "pkgbase")"
           export \
-            _pkgname="$(
+            _pkgname="$( \
               _evmfs="false" \
-              /entrypoint.sh \
               recipe-get \
                 "PKGBUILD" \
                 "pkgname")"
       - name:
           Installs build dependencies.
+        env:
+          GH_TOKEN:
+            ${{ secrets.GITHUB_TOKEN }}
         run: |
+          ls
+          _evmfs="false" \
+          _git="false" \
+          _git_service="github" \
+          recipe-get \
+            -o \
+              "array" \
+            -d \
+              " " \
+            "PKGBUILD" \
+            "makedepends"
+          _evmfs="false" \
+          _git_service="github" \
+          recipe-get \
+            -o \
+              "array" \
+            -d \
+              " " \
+            "PKGBUILD" \
+            "makedepends" > \
+          "${HOME}/makedepends"
+          # ( _evmfs="false" \
+          #   recipe-get \
+          #     -o \
+          #       "array" \
+          #     -d \
+          #       " " \
+          #     "PKGBUILD" \
+          #     "makedepends" || \
+          #   true ) > \
+          #   "makedepends"
           export \
-            _pkgs=(
-            $(_evmfs="false" \
-              _evmfs="false" \
-              recipe-get \
-                "PKGBUILD" \
-                "makedepends")
-          )
-          pacman \
-            -S \
-            --noconfirm \
-            "${_pkgs[@]}" \
-            --overwrite="*"
+            _makedepends="$( \
+              cat \
+                "${HOME}/makedepends")"
+          echo \
+            "Build dependencies found: '$_makedepends'."
+          for _pkg in "jq" $(cat "${HOME}/makedepends"); do \
+            echo \
+              "Extracting package name from '${_pkg}' with version-split."; \
+            version-split \
+              -v \
+              "${_pkg}" \
+              "name" || \
+              true; \
+            export \
+              _depend_name="$( \
+                version-split \
+                  "${_pkg}" \
+                  "name" || \
+                true)"; \
+            echo \
+              "Installing '${_depend_name}' with pacman."; \
+            pacman \
+              -S \
+                --noconfirm \
+                "${_depend_name}" \
+                --overwrite="*" || \
+              true
+          done
+          for _pkg in $(cat "${HOME}/makedepends"); do \
+            _depend_name="$( \
+              version-split \
+                "${_pkg}" \
+                "name" || \
+              true)"; \
+            echo \
+              "Installing '${_depend_name}' with fur."; \
+              fur \
+                -v \
+                -t \
+                  "ci" \
+                -m \
+                  "github" \
+                -p \
+                  "pacman" \
+                "${_depend_name}" || \
+              true
+          done
       - name:
           Builds the Arch package.
         run: |
+          _evmfs="false" \
+          _git_service="github" \
+          recipe-get \
+            -v \
+            "PKGBUILD" \
+            "pkgbase"
+          export \
+            _pkgbase="$( \
+              _evmfs="false" \
+              _git_service="github" \
+              recipe-get \
+                "PKGBUILD" \
+                "pkgbase")" && \
           su \
             -c \
-              "cd $(pwd) && _evmfs="false" reallymakepkg -v -u -w '/home/user/${_pkgbase}-build' -- -df --nocheck --skippgpcheck" - \
+              "cd ${PWD} && _evmfs="false" _git="false" _git_service="github" reallymakepkg -v -u -w '/home/user/${_pkgbase}-build' -- -df --nocheck --skippgpcheck && ls -lsh" - \
             "user"
+      - name:
+          Fix naming issue with architecture.
+        run: |
+          export \
+            _pkgname="$( \
+              _evmfs="false" \
+              _git_service="github" \
+              recipe-get \
+                "PKGBUILD" \
+                "pkgname")" \
+            _pkgver="$( \
+              _evmfs="false" \
+              _git_service="github" \
+              recipe-get \
+                "PKGBUILD" \
+                "pkgver")" \
+            _pkgrel="$( \
+              _evmfs="false" \
+              _git_service="github" \
+              recipe-get \
+                "PKGBUILD" \
+                "pkgrel")" && \
+          mv \
+            "${_pkgname}-${_pkgver}-${_pkgrel}-x86_64pkg.tar.xz" \
+            "${_pkgname}-${_pkgver}-${_pkgrel}-x86_64.pkg.tar.xz" || \
+          true
       # - name:
       #     Installs the package.
       #   run: |
@@ -1298,7 +1815,7 @@ jobs:
       #       -Udd \
       #       --noconfirm \
       #       $(find \
-      #           "$(pwd)" \
+      #           "${PWD}" \
       #           -iname \
       #             "*.pkg.tar.*")
       - name:
@@ -1317,7 +1834,7 @@ jobs:
         id:
           version
       - name:
-          Upload Arch package.
+          Uploads Arch package.
         uses:
           actions/upload-release-asset@v1
         env:
@@ -1328,9 +1845,9 @@ jobs:
             ${{ github.event.release.upload_url }}
             # ${{ steps.create_release.outputs.upload_url }}
           asset_path:
-            libassuan-${{ steps.version.outputs.version }}-x86_64.pkg.tar.xz
+            "libassuan-${{ steps.version.outputs.version }}-${{ matrix.architecture }}.pkg.tar.xz"
           asset_name:
-            dogeos-gnu-libassuan-${{ steps.version.outputs.version }}-x86_64.pkg.tar.xz
+            "dogeos-gnu-libassuan-${{ steps.version.outputs.version }}-${{ matrix.architecture }}.pkg.tar.xz"
           asset_content_type:
             application/gzip
   msys2_release:
@@ -1362,10 +1879,13 @@ jobs:
           install:
             base-devel
             dos2unix
+            mingw-w64-${{ matrix.env }}-github-cli
             git
             mingw-w64-${{ matrix.env }}-jq
             mingw-w64-${{ matrix.env }}-gcc
+            mingw-w64-${{ matrix.env }}-nodejs
             python-docutils
+            unzip
       - name:
           Upgrade Arch environment.
         run: |
@@ -1453,7 +1973,7 @@ jobs:
             -rf \
             "${HOME}/fur"
       - name:
-          Installs Crash Bash Library.
+          Installs latest Crash Bash Library.
         run: |
           git \
             clone \
@@ -1467,21 +1987,93 @@ jobs:
             PREFIX="/usr" \
             install
       - name:
-          Gets recipe-get.
+          Installs latest Reallymakepkg.
+        run: |
+          pacman \
+            -Rdd \
+            --noconfirm \
+            "reallymakepkg"; \
+          git \
+            clone \
+              --branch \
+                "main" \
+              --single-branch \
+              "https://github.com/themartiancompany/reallymakepkg" \
+              "${HOME}/reallymakepkg-src" || \
+          true
+          cd \
+            "${HOME}/reallymakepkg-src"
+          make \
+            -C \
+              "${HOME}/reallymakepkg-src" \
+            PREFIX="/usr" \
+            install-scripts
+          install \
+            -vDm644 \
+            "${HOME}/reallymakepkg-src/configs/makepkg.gnu.conf" \
+            "/etc/reallymakepkg/makepkg.gnu.conf"
+      - name:
+          Installs latest EVM GNUPG.
         run: |
           git \
             clone \
-              "https://github.com/themartiancompany/reallymakepkg" || \
+              --single-branch \
+              --depth=1 \
+              "https://github.com/themartiancompany/evm-gnupg" \
+              "${HOME}/evm-gnupg-src" || \
           true
           cd \
-            "reallymakepkg"
+            "${HOME}/evm-gnupg-src"
           make \
             PREFIX="/usr" \
-            install
-          install \
-            -vDm644 \
-            "configs/makepkg.gnu.conf" \
-            "/etc/reallymakepkg/makepkg.gnu.conf"
+            install-scripts
+      - name:
+          Installs latest gl-dl.
+        run: |
+          git \
+            clone \
+              --single-branch \
+              --depth=1 \
+              "https://github.com/themartiancompany/gl-dl" \
+              "${HOME}/gl-dl-src" || \
+          true
+          cd \
+            "${HOME}/gl-dl-src"
+          make \
+            PREFIX="/usr" \
+            install-scripts
+      - name:
+          Installs latest Gur.
+        run: |
+          git \
+            clone \
+              --branch="master" \
+              --single-branch \
+              --depth=1 \
+              "https://github.com/themartiancompany/gur" \
+              "${HOME}/gur-src" || \
+          true
+          make \
+            PREFIX="/usr" \
+            -C \
+              "${HOME}/gur-src" \
+            install-scripts
+      - name:
+          Installs latest Fur.
+        run: |
+          git \
+            clone \
+              --branch="main" \
+              --single-branch \
+              --depth=1 \
+              "https://github.com/themartiancompany/fur" \
+              "${HOME}/fur-src" || \
+          true
+          cd \
+            "${HOME}/fur-src"
+          make \
+            PREFIX="/usr" \
+            install-fur
       # - name:
       #     Installs Rust.
       #   run: |
@@ -1500,66 +2092,219 @@ jobs:
       - uses:
           actions/checkout@v3
       - name:
+          Installs recent EVM GNUPG.
+        env:
+          GITHUB_TOKEN:
+            ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pacman \
+            -S \
+            --noconfirm \
+            "mingw-w64-${{ matrix.env }}-github-cli"
+          bash \
+            ".github/gur-mini" \
+            "themartiancompany" \
+            "evm-gnupg" \
+            "0.0.0.0.0.0.0.0.1.1.1.1.1.1-15"
+          # git \
+          #   clone \
+          #     --single-branch \
+          #     --depth=1 \
+          #     "https://github.com/themartiancompany/evm-gnupg" \
+          #     "${HOME}/evm-gnupg-src" || \
+          # true
+          # cd \
+          #   "${HOME}/evm-gnupg-src"
+          # make \
+          #   -C \
+          #       "${HOME}/evm-gnupg-src" \
+          #   PREFIX="/usr" \
+          #   install-scripts
+      - name:
           Installs build dependencies.
         run: |
+          pacman \
+            -Ss \
+            "npm" || \
+          true
+          dos2unix \
+            "PKGBUILD"
           _evmfs="false" \
-            recipe-get \
+          _git_service="github" \
+          recipe-get \
+            -v \
+            -o \
+              "array" \
+            -d \
+              " " \
+            "PKGBUILD" \
+            "makedepends" || \
+          true
+          _evmfs="false" \
+          _git_service="github" \
+            "recipe-get" \
+              -o \
+                "array" \
+              -d \
+                " " \
               "PKGBUILD" \
-              "makedepends" || \
-            true
-          export \
-            _pkgs="$( \
-              _evmfs="false" \
-              recipe-get \
-                "PKGBUILD" \
-                "makedepends")"
-          for _pkg in ${_pkgs}; do
+              "makedepends" > \
+            "${HOME}/makedepends"; \
+          # ( _evmfs="false" \
+          #     recipe-get \
+          #       -o \
+          #         "array" \
+          #       -d \
+          #         " " \
+          #       "PKGBUILD" \
+          #       "makedepends" > \
+          #   "${HOME}/makedepends"
+          for _pkg in $(cat "${HOME}/makedepends"); do \
+            _mingw_name="mingw-w64-${{ matrix.env }}-${_pkg}"; \
             export \
-              _pkgs_mingw="${_pkgs_mingw} mingw-w64-${{ matrix.env }}-${_pkg}"
+              _pkgs_mingw="${_pkgs_mingw} ${_mingw_name}"; \
+            echo \
+              "${_mingw_name}" >> \
+              "${HOME}/makedepends-mingw"; \
           done
-          for _pkg in ${_pkgs}; do
+          for _pkg in $(cat "${HOME}/makedepends"); do \
+            _depend_name="$( \
+                version-split \
+                  "${_pkg}" \
+                  "name")"; \
+            echo \
+              "Installing '${_depend_name}' with pacman."; \
             pacman \
               -S \
-              --noconfirm \
-              ${_pkg} \
-              --overwrite="*" || \
-              true
+                --noconfirm \
+                "${_depend_name}" \
+                --overwrite="*" || \
+              true; \
           done
-          for _pkg in ${_pkgs_mingw}; do
+          for _pkg in $(cat "${HOME}/makedepends-mingw"); do \
+            _depend_name="$( \
+                version-split \
+                  "${_pkg}" \
+                  "name")"; \
+            echo \
+              "Installing mingw '${_depend_name}' build dependency with pacman."; \
             pacman \
               -S \
-              --noconfirm \
-              ${_pkg} \
-              --overwrite="*" || \
-              true
+                --noconfirm \
+                "${_depend_name}" \
+                --overwrite="*" || \
+              true; \
+          done
+          for _pkg in $(cat "${HOME}/makedepends"); do \
+            _depend_name="$( \
+                version-split \
+                  "${_pkg}" \
+                  "name")"; \
+            echo \
+              "Installing '${_depend_name}' with fur."; \
+              fur \
+                -v \
+                -t \
+                  "ci" \
+                -m \
+                  "github" \
+                -p \
+                  "pacman" \
+                "${_depend_name}" || \
+              true; \
+          done
+          for _pkg in $(cat "${HOME}/makedepends-mingw"); do \
+            _depend_name="$( \
+                version-split \
+                  "${_pkg}" \
+                  "name")"; \
+            echo \
+              "Installing MinGW '${_depend_name}' build dependency with fur."; \
+              fur \
+                -v \
+                -t \
+                  "ci" \
+                -m \
+                  "github" \
+                -p \
+                  "pacman" \
+                "${_depend_name}" || \
+              true; \
           done
       - name:
           Builds the Windows package.
         run: |
           dos2unix \
             "PKGBUILD"
-          # _evmfs="false" \
-          # makepkg \
-          #   -df \
-          #   --nocheck
+          # export \
+          #   _pkgbase="$( \
+          #     recipe-get \
+          #       "PKGBUILD" \
+          #       "pkgbase")"
+          echo \
+            "$(uname \
+                 -o)"
+          _evmfs="false" \
+          _git_service="github" \
+          recipe-get \
+            -v \
+            "PKGBUILD" \
+            "source"
+          _evmfs="false" \
+          _git_service="github" \
+          recipe-get \
+            -v \
+            "PKGBUILD" \
+            "sha256sums"
           PKGEXT='.pkg.tar.xz' \
           _evmfs="false" \
+          _git="false" \
+          _git_service="github" \
           makepkg \
             -df \
             --nocheck \
             --skippgpcheck
+          ls \
+            -lsh
+      - name:
+          Fix naming issue with architecture.
+        run: |
+          export \
+            _pkgname="$( \
+              _evmfs="false" \
+              _git_service="github" \
+              recipe-get \
+                "PKGBUILD" \
+                "pkgname")" \
+            _pkgver="$( \
+              _evmfs="false" \
+              _git_service="github" \
+              recipe-get \
+                "PKGBUILD" \
+                "pkgver")" \
+            _pkgrel="$( \
+              _evmfs="false" \
+              _git_service="github" \
+              recipe-get \
+                "PKGBUILD" \
+                "pkgrel")" && \
+          mv \
+            "${_pkgname}-${_pkgver}-${_pkgrel}-x86_64pkg.tar.xz" \
+            "${_pkgname}-${_pkgver}-${_pkgrel}-x86_64.pkg.tar.xz" || \
+          true
           # _evmfs="false" \
+          # _git_service="github" \
           # reallymakepkg \
           #   -v \
           #   -w \
-          #     "${HOME}/libassuan-git-build" \
+          #     "${HOME}/${_pkgbase}-build" \
           #   -u \
           #   -- \
           #   -df \
           #   --nocheck \
           #   --skippgpcheck
           find \
-            "$(pwd)" \
+            "${PWD}" \
             -iname \
               "*.pkg.tar.*"
       # - name:
@@ -1582,7 +2327,7 @@ jobs:
       #       --noconfirm \
       #       --overwrite="*" \
       #       $(find \
-      #           "$(pwd)" \
+      #           "${PWD}" \
       #           -iname \
       #             "*.pkg.tar.*")
       - name:
@@ -1592,14 +2337,14 @@ jobs:
             "::set-output name=version::$( \
             export \
               _evmfs="false" && \
-              recipe-get \
-                "PKGBUILD" \
-                "pkgver")-$( \
+            recipe-get \
+              "PKGBUILD" \
+              "pkgver")-$( \
             export \
               _evmfs="false" && \
-              recipe-get \
-                "PKGBUILD" \
-                "pkgrel")"
+            recipe-get \
+              "PKGBUILD" \
+              "pkgrel")"
         id:
           version
       - name:
@@ -1614,9 +2359,9 @@ jobs:
             ${{ github.event.release.upload_url }}
             # ${{ steps.create_release.outputs.upload_url }}
           asset_path:
-            libassuan-${{ steps.version.outputs.version }}-${{ matrix.env }}.pkg.tar.xz
+            "libassuan-${{ steps.version.outputs.version }}-${{ matrix.arch }}.pkg.tar.xz"
           asset_name:
-            dogeos-windows-libassuan-${{ steps.version.outputs.version }}-${{ matrix.env }}.pkg.tar.xz
+            "dogeos-windows-libassuan-${{ steps.version.outputs.version }}-${{ matrix.arch }}.pkg.tar.xz"
           asset_content_type:
             application/gzip
 
@@ -1637,9 +2382,26 @@ jobs:
               -y \
               "ninja" \
               "clang" \
-          pip \
-            install \
-            "meson"
+          /entrypoint.sh \
+            pip \
+              install \
+                "meson"
+          /entrypoint.sh \
+            pip \
+              install \
+                "poetry"
+          /entrypoint.sh \
+            pip \
+              install \
+                "build"
+          /entrypoint.sh \
+            pip \
+              install \
+                "installer"
+          /entrypoint.sh \
+            pip \
+              install \
+                "setuptools"
       - uses:
           actions/checkout@v3.3.0
       - name:
