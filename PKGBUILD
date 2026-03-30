@@ -114,7 +114,7 @@ pkgname=(
 pkgver=3.0.2
 _commit="0f84595a4bc706d3afb969d59618244c7db3b59f"
 _gpg_error_pkgver="1.17"
-pkgrel=24
+pkgrel=25
 _pkgdesc=(
   'IPC library used by some GnuPG related software'
 )
@@ -163,19 +163,17 @@ provides=(
   "${_pkg}.so"
 )
 _url="https://dev.gnupg.org/source/${_pkg}"
-if [[ "${_git}" == "true" ]]; then
-  if [[ "${_git_service}" == "github" || \
-        "${_git_service}" == "gitlab" ]]; then
-    _url="${_git_http_uri}"
-  fi
-  _tag_name="commit"
-  if [[ "${_tag_name}" == "commit" ]]; then
-    _tag="${_commit}"
-    _uri="${_url}.git?signed"
-  elif [[ "${_tag_name}" == "tag" ]]; then
-    _tag="${_pkg}-${pkgver}"
-    _uri="${_url}.git?signed"
-  fi
+if [[ "${_git_service}" == "github" || \
+      "${_git_service}" == "gitlab" ]]; then
+  _url="${_git_http_uri}"
+fi
+_tag_name="commit"
+if [[ "${_tag_name}" == "commit" ]]; then
+  _tag="${_commit}"
+  _uri="${_url}.git?signed"
+elif [[ "${_tag_name}" == "tag" ]]; then
+  _tag="${_pkg}-${pkgver}"
+  _uri="${_url}.git?signed"
 fi
 _tarname="${_pkg}-${_tag}"
 _tarfile="${_pkg}-${_tag}.${_archive_format}"
